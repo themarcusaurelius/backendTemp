@@ -6,9 +6,16 @@ const keys = require('../config/keys');
 //Gives access to user model class
 const User = mongoose.model('users');
 
-//Encoding Users - Take identifying information from existing user to reuse later. user.id is from the mongo identifier not profile id.
+//Encoding Users - Take identifier from existing user and puts into the cookie to reuse later. user.id is from the mongo identifier not profile id.
 passport.serializeUser((user, done) => {
     done(null, user.id);
+});
+
+//Searches over and grabs a particular User identifier from cookie and turns back into a user
+passport.deserializeUser((id, done) => {
+    User.findById(id).then(user => {
+        done(null, user)
+    });
 });
 
 //Creates and registers a new instance of google strategy
